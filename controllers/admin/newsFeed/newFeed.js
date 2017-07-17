@@ -1,4 +1,4 @@
-var model = require('/models').newFeed
+/*var model = require('/models').newFeed
 var fs = require('fs');
 var navbar 	= require('controllers/navbar').navbar
 
@@ -56,4 +56,4 @@ function display(req,res){
 
 	})
 	
-}
+}*/

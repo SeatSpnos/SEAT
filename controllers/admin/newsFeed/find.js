@@ -1,4 +1,4 @@
-var fs = require('fs');
+/*var fs = require('fs');
 var model = require('models');
 var async = require('async');
 
@@ -134,3 +134,4 @@ function render ( params, next ) {
   })
 
 }
+*/

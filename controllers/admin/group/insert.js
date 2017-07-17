@@ -1,4 +1,4 @@
-const model = require('models').group
+/*const model = require('models').group
   data = {}
   tomodel = {}
   
@@ -23,3 +23,4 @@ function addGroup (req, res){
 }
 
 
+*/

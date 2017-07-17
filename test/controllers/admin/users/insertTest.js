@@ -2,92 +2,94 @@ const assert = require('chai').assert;
 const helpers = require('../../../helpers')
 const supertest = require('supertest');
 const connection = supertest(helpers.app);
-const database = helpers.database;
+const tableQuerys = require('./');
+const database = helpers.db;
+
+let tableQ = tableQuerys.createTable;
+let insertUsers = tableQuerys.insertUsers;
 
 function createTable (done) {
-  let query = 
-    `CREATE TABLE users
-    (
-      id INT NOT NULL AUTO_INCREMENT,
-      username VARCHAR(50) NOT NULL,
-      firstName VARCHAR(50) NOT NULL,
-      lastName VARCHAR(50) NOT NULL,
-      email VARCHAR(50) NOT NULL,
-      group_permission VARCHAR(50) NOT NULL,
-      data_nascimento DATE NULL,
-      data_entrada DATE NULL,
-      foto VARCHAR(50) NULL,
-      cartao_nos VARCHAR(50) NULL,
-      telefone VARCHAR(50) NULL,
-      password VARCHAR(50)  NOT NULL,
-      state INT(10) NULL,
-      firstLogin INT(10) NULL,
-      PRIMARY KEY (id)
-    )`
-  database.query(null, query, [] , done)
+  database.query(null, tableQ, [] , done)
 }
 
 describe('#Testing insert.js from users', function(err, res) {
-	describe('With errors and no db', function(err, res) {
-		it('it should return an error 500 when there is no connection to db', function(done) {
-			connection
-				.post('/users')
-				.end(function(err, res) {
-					assert.isNotOk(err);
+  describe('With errors and no db', function(err, res) {
+    it('it should return an error 500 when there is no connection to db', function(done) {
+      connection
+        .post('/')
+        .end(function(err, res) {
+          assert.isNotOk(err);
           assert.equal(res.statusCode, 500);
           assert.isOk(res.body);
-					done();
-				});
-		});	
-	});
+          done();
+        });
+    }); 
+  });
 
-	describe('Without errors with db', function(err, res) {
-		before(function (done) {
+  describe('Without errors with db', function(err, res) {
+    before(function (done) {
+      let query = 
+      `INSERT INTO users
+      SET ?
+      `;
+      database.start(function() {
+        createTable(function (err, res) {
+          database.query(null, query, insertUsers[0], function() {
+            database.query(null, query, insertUsers[1], done);
+          });
+        });
+      });
+    });  
 
-			let insertValues = {
-				
-				  username: 'Rui',
-				  firstName: 'Afonso',
-				  lastName: 'last',
-				  email: 'name@last.com',
-				  group_permission: 'dev',
-				  data_nascimento: '19/02/1984',
-				  data_entrada: '19/02/1984',
-				  foto: 'ccc',
-				  cartao_nos: 'c',
-				  telefone: '21212121',
-				  password: 'password',
-				  state: 'active',
-			    firstLogin: 1 
-			};
+    after(function (done) {
+      database.close(function() {
+        done();
+      });
+    });
 
-	    let query = 
-	    `INSERT INTO users
-	    SET ?
-	    `;
-	    database.start(function() {
-	      createTable(function (err, res) {
-	        database.query(null, query, insertValues, done);
-	      });
-	    });
-	  });  
+    it('It should insert a new user into db', function(done) {
+      connection
+        .post('/')
+        .type('json')
+        .send({     
+          username: 'Oscarie',
+          email: 'Oscar@gmail.com',
+          firstName: 'Oscar',
+          lastName: 'Matus',
+          group_permission: 'dev',
+          data_nascimento: '1990-10-22',
+          data_entrada: null,
+          foto: null,
+          carta_conducao: null,
+          cartao_nos: null,
+          phonenumber: 215556484
+        })
+        .end(function(err, res) {
+          assert.isNotOk(err)
+          assert.equal(res.statusCode, 200)
+          assert.isOk(res.body)
+          done();
+        });
+    });
+    it ('test', function (argument) {
+      joiValidation = require('../../../../controllers').admin.users.joiValidation;
 
-	  after(function (done) {
-	    database.close(function() {
-	      done();
-	    });
-	  });
+      let obj1 = {
+          username: 'Oscarie',
+          email: 'Oscar@gmail.com',
+          firstName: 'Oscar',
+          lastName: 'Matus',
+          group_permission: 'dev',
+          data_nascimento: '1990-10-22',
+          data_entrada: null,
+          foto: null,
+          carta_conducao: null,
+          cartao_nos: null,
+          phonenumber: 215556484
+      };
 
-		it('It should insert a new user into db', function(done) {
-			connection
-				.post('/users')
-				.end(function(err, res) {
-					assert.isNotOk(err)
-					console.log('HEREEEEE 200: ', res.body)
-					assert.equal(res.statusCode, 200)
-					assert.isOk(res.body)
-					done();
-				});
-		});
-	});
+      joiValidation(obj1);
+
+    });
+  });
 });

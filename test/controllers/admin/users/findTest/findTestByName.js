@@ -1,52 +1,74 @@
-/*const assert = require('chai').assert;
+const assert = require('chai').assert;
 const helpers = require('../../../../helpers')
 const supertest = require('supertest');
 const connection = supertest(helpers.app);
-const database = helpers.database;
+const tableQuerys = require('../');
+const database = helpers.db;
+
+let tableQ = tableQuerys.createTable;
+let insertUsers = tableQuerys.insertUsers;
 
 function createTable (done) {
-  let query = 
-    `CREATE TABLE users
-    (
-      username INT NOT NULL AUTO_INCREMENT,
-      username VARCHAR(50) NOT NULL,
-      firstName VARCHAR(50) NOT NULL,
-      lastName VARCHAR(50) NOT NULL,
-      email VARCHAR(50) NOT NULL,
-      group_permission VARCHAR(50) NOT NULL,
-      data_nascimento DATE NULL,
-      data_entrada DATE NULL,
-      foto VARCHAR(50) NULL,
-      cartao_nos VARCHAR(50) NULL,
-      telefone VARCHAR(50) NULL,
-      password VARCHAR(50)  NOT NULL,
-      state INT(10) NULL,
-      firstLogin INT(10) NULL,
-      PRIMARY KEY (username)
-    )`
-  database.query(null, query, [] , done)
+  database.query(null, tableQ, [] , done)
 }
 
 describe('#Testing find.js from users', function() {
-  describe('#byUsername', function () {
-    describe('With error no db', function () {
-      it('it should return an error 500 when there is no connection to db ', function(done) {
+  describe('#ByName', function() {
+    describe('With error and no db', function() {
+      it('it should return an error 500 when there is no connection to db', function(done) {
+        connection
+        .get(`/users/:username`)
+        .end(function (err, res) {
+          assert.isNotOk(err);
+          assert.equal(res.statusCode, 500);
+          assert.isOk(res.body);
+          done();
+        });
+      });
+    });
+
+    describe('With error and db', function() {
+      before(function (done) {
+        let query = 
+          `INSERT INTO users
+          SET ?
+          `;
+        database.start(function() {
+          createTable(function (err, res) {
+            database.query(null, query, insertUsers, done);
+          });
+        });
+      });
+
+      after(function (done) {
+        database.close(function (err, res) {
+          done();
+        });
+      });
+      
+      it('It should return error 404 if request not found', function(done) {
+        let username = 1;
         connection
           .get(`/users/${username}`)
-          .end(function (err, res) {
+          .end(function(err, res) {
             assert.isNotOk(err);
-            assert.equal(res.statusCode, 500);
-            assert.isOk(res.body);
+            assert.equal(res.statusCode, 404);
+            assert.isOk(res.body)
+            assert.typeOf(res.body, 'string');
             done();
           });
       });
     });
-
-    describe('With error and db', function () {
-
+    describe('Without errors with db', function() {
       before(function (done) {
-        database.start(function (err, res) {
-          createTable(done);
+        let query = 
+          `INSERT INTO users
+          SET ?
+          `;
+        database.start(function() {
+          createTable(function (err, res) {
+            database.query(null, query, insertUsers, done);
+          });
         });
       });
 
@@ -56,71 +78,11 @@ describe('#Testing find.js from users', function() {
         });
       });
 
-      it('it should return error 400 when a invalid username param are provided', function(done) {
-        let username = 1;
+      it('it should return the user searched by username', function(done) {
+        let username = 'Gaspar';
         connection
           .get(`/users/${username}`)
-          .end(function (err, res) {
-            assert.isNotOk(err);
-            assert.equal(res.statusCode, 400);
-            assert.typeOf(res.body.error, 'string');
-            done();
-          });
-      });
-
-      it('It should return an 404 error if request not found', function(done) {
-        let username = 1;
-        connection
-          .get(`/users/${username}`)
-          .end(function (err, res) {
-            assert.isNotOk(err);
-            assert.equal(res.statusCode, 404);
-            assert.isOk(res.body)
-            assert.typeOf(res.body, 'string');
-            done();
-          });
-      });
-    });
-
-    describe('Without errors', function () {
-      let insertedValues = {
-        username: 'user',
-        firstName: 'name',
-        lastName: 'last',
-        email: 'name@last.com',
-        group_permission: '',
-        data_nascimento: null,
-        data_entrada: null,
-        foto: null,
-        cartao_nos: null,
-        telefone: null,
-        password: 'password',
-        state: null,
-        firstLogin: null 
-      };
-      before(function (done) {
-        let query = 
-          `INSERT INTO users
-          SET ?
-          `;
-        database.start(function() {
-          createTable(function (err, res) {
-            database.query(null, query, insertedValues, done);
-          });
-        });
-      });  
-
-      after(function (done) {
-        database.close(function() {
-          done();
-        });
-      });
-
-      it('it should return a user with the given username from db', function(done) {
-        let username = 1;
-        connection
-          .get(`/users/${username}`)
-          .end(function (err, res) {
+          .end(function(err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 200);
             assert.isOk(res.body);
@@ -132,4 +94,4 @@ describe('#Testing find.js from users', function() {
     });
   });
 });
-*/
+  

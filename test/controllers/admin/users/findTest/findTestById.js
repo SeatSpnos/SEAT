@@ -2,29 +2,14 @@ const assert = require('chai').assert;
 const helpers = require('../../../../helpers')
 const supertest = require('supertest');
 const connection = supertest(helpers.app);
-const database = helpers.database;
+const tableQuerys = require('../');
+const database = helpers.db;
+
+let tableQ = tableQuerys.createTable;
+let insertUsers = tableQuerys.insertUsers;
 
 function createTable (done) {
-  let query = 
-    `CREATE TABLE users
-    (
-      id INT NOT NULL AUTO_INCREMENT,
-      username VARCHAR(50) NOT NULL,
-      firstName VARCHAR(50) NOT NULL,
-      lastName VARCHAR(50) NOT NULL,
-      email VARCHAR(50) NOT NULL,
-      group_permission VARCHAR(50) NOT NULL,
-      data_nascimento DATE NULL,
-      data_entrada DATE NULL,
-      foto VARCHAR(50) NULL,
-      cartao_nos VARCHAR(50) NULL,
-      telefone VARCHAR(50) NULL,
-      password VARCHAR(50)  NOT NULL,
-      state INT(10) NULL,
-      firstLogin INT(10) NULL,
-      PRIMARY KEY (id)
-    )`
-  database.query(null, query, [] , done)
+  database.query(null, tableQ, [] , done)
 }
 
 describe('#Testing find.js from users', function() {
@@ -82,21 +67,6 @@ describe('#Testing find.js from users', function() {
     });
 
     describe('Without errors', function () {
-      let insertedValues = {
-        username: 'user',
-        firstName: 'name',
-        lastName: 'last',
-        email: 'name@last.com',
-        group_permission: '',
-        data_nascimento: null,
-        data_entrada: null,
-        foto: null,
-        cartao_nos: null,
-        telefone: null,
-        password: 'password',
-        state: null,
-        firstLogin: null 
-      };
       before(function (done) {
         let query = 
           `INSERT INTO users
@@ -104,7 +74,7 @@ describe('#Testing find.js from users', function() {
           `;
         database.start(function() {
           createTable(function (err, res) {
-            database.query(null, query, insertedValues, done);
+            database.query(null, query, insertUsers[0], done);
           });
         });
       });  
@@ -124,7 +94,7 @@ describe('#Testing find.js from users', function() {
             assert.equal(res.statusCode, 200);
             assert.isOk(res.body);
             assert.equal(res.body.length, 1);
-            assert.ownInclude(res.body[0], insertedValues)
+            assert.ownInclude(res.body[0], insertUsers[0])
             done();
           });
       });

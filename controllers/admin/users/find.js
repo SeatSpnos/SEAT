@@ -33,8 +33,9 @@ function byId (req, res, next) {
 function byUsername(req, res, next) {
 	let username = req.params.username;
 	let userAsString = String(username);
-	if (id != userAsString) {
-		let err = `Invalid type of id. Id is a ${typeof id } when it should be a String`
+
+	if (typeof username != typeof userAsString) {
+		let err = `Invalid type of id. Id is a ${typeof username } when it should be a String`
 		return res.status(400).json({error: err});
 	}	
 	userModels.byUsername(username, function(err, users) {

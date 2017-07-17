@@ -1,25 +1,25 @@
-const createNews = require('./create')
-const findNews = require('./find')
-const inactiveNews = require('./inactive')
+// const createNews = require('./create')
+// const findNews = require('./find')
+// const inactiveNews = require('./inactive')
 
-module.exports = {
-	find: find,
-	create: create,
-	inactive: inactive
-};
+// module.exports = {
+// 	find: find,
+// 	create: create,
+// 	inactive: inactive
+// };
 
-function find (req, res, next) { 
-	findNews(req, res, next);
-}
+// function find (req, res, next) { 
+// 	findNews(req, res, next);
+// }
 
-function create(req,res,next){
-	CreateNews(req,res,function(err,data){
-		 if (err) return next(err)
+// function create(req,res,next){
+// 	CreateNews(req,res,function(err,data){
+// 		 if (err) return next(err)
 
-    res.sendStatus(201)
-	})
-}
+//     res.sendStatus(201)
+// 	})
+// }
 
-function inactive( req, res, next ) {
-	InactiveNews ( req, res, next )
-}
+// function inactive( req, res, next ) {
+// 	InactiveNews ( req, res, next )
+// }
