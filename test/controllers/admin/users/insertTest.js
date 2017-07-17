@@ -4,7 +4,19 @@ const supertest = require('supertest');
 const connection = supertest(helpers.app);
 const tableQuerys = require('./');
 const database = helpers.db;
-
+const user = {
+  username: 'Oscarie',
+  email: 'Oscar@gmail.com',
+  firstName: 'Oscar',
+  lastName: 'Matus',
+  group_permission: 'dev',
+  data_nascimento: '1990-10-22',
+  data_entrada: '2017-06-02',
+  foto: '',
+  carta_conducao: '',
+  cartao_nos: '',
+  phonenumber: 215556484
+};
 let tableQ = tableQuerys.createTable;
 let insertUsers = tableQuerys.insertUsers;
 
@@ -16,7 +28,8 @@ describe('#Testing insert.js from users', function(err, res) {
   describe('With errors and no db', function(err, res) {
     it('it should return an error 500 when there is no connection to db', function(done) {
       connection
-        .post('/')
+        .post('/users')
+        .send(user)
         .end(function(err, res) {
           assert.isNotOk(err);
           assert.equal(res.statusCode, 500);
@@ -49,47 +62,15 @@ describe('#Testing insert.js from users', function(err, res) {
 
     it('It should insert a new user into db', function(done) {
       connection
-        .post('/')
+        .post('/users')
         .type('json')
-        .send({     
-          username: 'Oscarie',
-          email: 'Oscar@gmail.com',
-          firstName: 'Oscar',
-          lastName: 'Matus',
-          group_permission: 'dev',
-          data_nascimento: '1990-10-22',
-          data_entrada: null,
-          foto: null,
-          carta_conducao: null,
-          cartao_nos: null,
-          phonenumber: 215556484
-        })
+        .send(user)
         .end(function(err, res) {
           assert.isNotOk(err)
           assert.equal(res.statusCode, 200)
           assert.isOk(res.body)
           done();
         });
-    });
-    it ('test', function (argument) {
-      joiValidation = require('../../../../controllers').admin.users.joiValidation;
-
-      let obj1 = {
-          username: 'Oscarie',
-          email: 'Oscar@gmail.com',
-          firstName: 'Oscar',
-          lastName: 'Matus',
-          group_permission: 'dev',
-          data_nascimento: '1990-10-22',
-          data_entrada: null,
-          foto: null,
-          carta_conducao: null,
-          cartao_nos: null,
-          phonenumber: 215556484
-      };
-
-      joiValidation(obj1);
-
     });
   });
 });

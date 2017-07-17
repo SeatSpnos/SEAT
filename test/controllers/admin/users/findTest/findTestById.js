@@ -18,7 +18,7 @@ describe('#Testing find.js from users', function() {
       it('it should return an error when a invalid param are provided', function(done) {
         let id = 'p';
         connection
-          .get(`/users/${id}`)
+          .get(`/users/byId/${id}`)
           .end(function (err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 400);
@@ -30,7 +30,7 @@ describe('#Testing find.js from users', function() {
       it('it should return an error 500 when there is no connection to db ', function(done) {
         let id = 1;
         connection
-          .get(`/users/${id}`)
+          .get(`/users/byId/${id}`)
           .end(function (err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 500);
@@ -55,7 +55,7 @@ describe('#Testing find.js from users', function() {
       it('It should return an 404 error if request not found', function(done) {
         let id = 1;
         connection
-          .get(`/users/${id}`)
+          .get(`/users/byId/${id}`)
           .end(function (err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 404);
@@ -88,7 +88,7 @@ describe('#Testing find.js from users', function() {
       it('it should return a user with the given id from db', function(done) {
         let id = 1;
         connection
-          .get(`/users/${id}`)
+          .get(`/users/byId/${id}`)
           .end(function (err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 200);

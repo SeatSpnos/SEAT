@@ -1,6 +1,7 @@
 const assert = require('chai').assert;
 const helpers = require('../../../../helpers')
 const supertest = require('supertest');
+const joi = require('joi');
 const connection = supertest(helpers.app);
 const tableQuerys = require('../');
 const database = helpers.db;
@@ -17,7 +18,7 @@ describe('#Testing find.js from users', function() {
     describe('With error and no db', function() {
       it('it should return an error 500 when there is no connection to db', function(done) {
         connection
-        .get(`/users/:username`)
+        .get(`/users/byUsername/:username`)
         .end(function (err, res) {
           assert.isNotOk(err);
           assert.equal(res.statusCode, 500);
@@ -46,15 +47,14 @@ describe('#Testing find.js from users', function() {
         });
       });
       
-      it('It should return error 404 if request not found', function(done) {
+      it('it should return an error 400 when a invalid param are provided', function(done) {
         let username = 1;
         connection
-          .get(`/users/${username}`)
+          .get(`/users/byUsername/${username}`)
           .end(function(err, res) {
             assert.isNotOk(err);
-            assert.equal(res.statusCode, 404);
-            assert.isOk(res.body)
-            assert.typeOf(res.body, 'string');
+            assert.equal(res.statusCode, 400);
+            assert.typeOf(res.body.error, 'string');
             done();
           });
       });
@@ -81,7 +81,7 @@ describe('#Testing find.js from users', function() {
       it('it should return the user searched by username', function(done) {
         let username = 'Gaspar';
         connection
-          .get(`/users/${username}`)
+          .get(`/users/byUsername/${username}`)
           .end(function(err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 200);
