@@ -2,8 +2,8 @@ const assert = require('chai').assert;
 const helpers = require('../../../../helpers')
 const supertest = require('supertest');
 const connection = supertest(helpers.app);
+const database = helpers.database;
 const tableQuerys = require('../');
-const database = helpers.db;
 
 let tableQ = tableQuerys.createTable;
 let insertUsers = tableQuerys.insertUsers;
@@ -66,7 +66,7 @@ describe('#Testing find.js from users', function() {
       });
     });
 
-    describe('Without errors', function () {
+    describe('Without errors and db', function () {
       before(function (done) {
         let query = 
           `INSERT INTO users
@@ -93,7 +93,6 @@ describe('#Testing find.js from users', function() {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 200);
             assert.isOk(res.body);
-            assert.equal(res.body.length, 1);
             assert.ownInclude(res.body[0], insertUsers[0])
             done();
           });

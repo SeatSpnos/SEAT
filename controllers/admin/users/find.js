@@ -24,25 +24,23 @@ function byId (req, res, next) {
 		let err = `Invalid type of id. Id is a ${typeof id } when it should be a number`
 		return res.status(400).json({error: err});
 	}	
-	userModels.find.byId(id, function(err, users) {
+	userModels.find.byId(id, function(err, user) {
 		if (err) return res.status(500).json(err);
-		if (!users.length) return res.status(404).json('User was not found.');
-		res.status(200).json(users);
+		if (!user.length) return res.status(404).json('User was not found.');
+		res.status(200).json(user);
 	});
 }
 
 function byUsername(req, res, next) {
-	
-	if (0) {
-		console.log('AKI CRLLLLLLLLLLLLLL: ' ,typeof username)
-		let err = `Invalid type of username. Username is a ${typeof username } when it should be a String`
+	let username = req.params.username;
+	let paramsValidation = validation(username, 'searchByNameSchema');
+	if (paramsValidation.error) {
+		let err = `Invalid type parameter. it's expected a 'username'`
 		return res.status(400).json({error: err});
 	}
-
-	userModels.byUsername(req.params.username, function(err, users) {
-		if (err) console.log(err);
-		return res.status(500).json(err);
-		if (!username.length) return res.status(404).json('User was not found.');
-		res.status(200).json(users);
+	userModels.find.byUsername(username, function(err, user) {
+		if (err) return res.status(500).json(err);
+		if (!user.length) return res.status(404).json('User was not found.');
+		res.status(200).json(user);
 	});
 }

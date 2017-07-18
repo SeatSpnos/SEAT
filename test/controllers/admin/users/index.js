@@ -5,7 +5,7 @@ const createTable =
       id INT(11) NOT NULL AUTO_INCREMENT,
       username VARCHAR(50) NOT NULL,
       password VARCHAR(200) NOT NULL,
-      firstLogIn VARCHAR(50) NOT NULL DEFAULT 'true',
+      firstLogin VARCHAR(50) NOT NULL DEFAULT 'true',
       email VARCHAR(50) NOT NULL,
       readContent VARCHAR(50) NOT NULL DEFAULT 'Sim',
       firstName VARCHAR(50) NOT NULL,
@@ -27,8 +27,7 @@ const createTable =
     AUTO_INCREMENT=1;`;
 
 const insertUsers = [{
-		username: 'Gaspar',
-		password: 'password', 
+		username: 'gaspar',
 		email: 'gaspar@coisas.com',
 		firstName: 'Almeida',
 		lastName: 'Coisas',
@@ -41,11 +40,10 @@ const insertUsers = [{
 		phonenumber: 213456789
   },
   {
-		username: 'Oscarie',
-		password: 'password', 
-		email: 'Oscar@gmail.com',
-		firstName: 'Oscar',
-		lastName: 'Matus',
+		username: 'oscarie',
+		email: 'oscar@gmail.com',
+		firstName: 'oscar',
+		lastName: 'matus',
 		group_permission: 'dev',
 		data_nascimento: '1990-10-22',
 	  data_entrada: null,
@@ -57,5 +55,5 @@ const insertUsers = [{
 
   module.exports = {
 	createTable: createTable,
-	insertUsers: insertUsers
+	insertUsers: insertUsers,
 }

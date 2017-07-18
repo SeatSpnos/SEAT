@@ -4,7 +4,8 @@
   "scripts": {
     "start": "node bin/app.js",
     "test": "set NODE_ENV=test&& mocha --timeout 5000 --recursive",
-    "test_A": "set NODE_ENV=test&& mocha --timeout 5000 ./test/controllers/admin/users/insertTest.js"
+    "test_insert": "set NODE_ENV=test&& mocha --timeout 5000 ./test/controllers/admin/users/insertTest/insertTest.js",
+    "test_edit": "set NODE_ENV=test&& mocha --timeout 5000 ./test/controllers/admin/users/updateTest/updateTestEditUser.js"
   },
   "dependencies": {
     "app-module-path": "^2.2.0",

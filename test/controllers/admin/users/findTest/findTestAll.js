@@ -3,7 +3,7 @@ const helpers = require('../../../../helpers')
 const supertest = require('supertest');
 const connection = supertest(helpers.app);
 const tableQuerys = require('../');
-const database = helpers.db;
+const database = helpers.database;
 
 let tableQ = tableQuerys.createTable;
 let insertUsers = tableQuerys.insertUsers;

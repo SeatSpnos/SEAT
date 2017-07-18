@@ -15,12 +15,12 @@ function createTable (done) {
 }
 
 describe('#Testing update.js from users', function() {
-  describe('#Edit user', function () {
+  describe('#Update new Password', function () {
     describe('With errors and without db', function () {
       it('it should return error 500 when there is no db connection', function(done) {
       connection
         .put('/users')
-        .send(insertUsers[0])
+        .send({ password: '123', id: 2 })
         .end(function (err, res) {
            assert.isNotOk(err);
            assert.equal(res.statusCode, 500);
@@ -30,7 +30,7 @@ describe('#Testing update.js from users', function() {
       });
     });
     
-    describe('With errors and db', function() {
+    describe('Without errors with db', function() {
       
       before(function (done) {
         let query = 
@@ -39,7 +39,7 @@ describe('#Testing update.js from users', function() {
           `;
         database.start(function() {
           createTable(function (err, res) {
-            database.query(null, query,insertUsers[0], done);
+            database.query(null, query,insertUsers[1], done);
           });
         });
       });  
@@ -50,14 +50,14 @@ describe('#Testing update.js from users', function() {
         });
       });
 
-       it('It should return error 404', function(done) {
+       it('It should update a new password into user', function(done) {
         let values = {password: '123', id: 1};
         connection
           .put('/users')
-          .send(insertUsers[1])
+          .send(values)
           .end(function (err, res) {
             assert.isNotOk(err);
-            assert.equal(res.statusCode, 404);
+            assert.equal(res.statusCode, 200);
             assert.isOk(res.body);
             assert.equal(res.body.affectedRows, 1)
             connection
