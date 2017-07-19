@@ -25,19 +25,22 @@ const createTable =
     COLLATE='latin1_swedish_ci'
     ENGINE=InnoDB
     AUTO_INCREMENT=1;`;
-
+      
 const insertUsers = [{
 		username: 'gaspar',
-		email: 'gaspar@coisas.com',
+		email: 'gaspar@gmail.com',
 		firstName: 'Almeida',
 		lastName: 'Coisas',
 		group_permission: 'dev',
     data_nascimento: '1984-02-02',
-    data_entrada: null,
-    foto: null,
-    carta_conducao: null,
-    cartao_nos: null,
-		phonenumber: 213456789
+    data_entrada: '2017-02-02',
+    foto: '',
+    carta_conducao: '',
+    cartao_nos: '',
+		phonenumber: 213456789,
+    readContent: 'sim',
+    comments: 'yes',
+    required: 'sim'
   },
   {
 		username: 'oscarie',
@@ -46,11 +49,14 @@ const insertUsers = [{
 		lastName: 'matus',
 		group_permission: 'dev',
 		data_nascimento: '1990-10-22',
-	  data_entrada: null,
-    foto: null,
-    carta_conducao: null,
-    cartao_nos: null,
-		phonenumber: 215556484
+	  data_entrada: '2017-02-02',
+    foto: '',
+    carta_conducao: '',
+    cartao_nos: '',
+		phonenumber: 215556484,
+    readContent: 'sim',
+    comments: 'yes',
+    required: 'sim'
   }]; 
 
   module.exports = {

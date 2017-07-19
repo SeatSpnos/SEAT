@@ -18,6 +18,22 @@ const schema = {
 	  phonenumber: joi.number(),
 	  required: joi.string().max(50)
 	}),
+	/*updateSchema: joi.object({
+      email: joi.string().email(),
+      readContent: joi.string().trim().min(3).max(50),
+      firstName: joi.string().trim().min(3).max(50),
+      lastName: joi.string().trim().min(3).max(50),
+      group_permission:joi.string().trim().min(3).max(50),
+      data_nascimento: req.body.data_nascimento,
+      data_entrada: req.body.data_entrada,
+      foto: req.body.data_nascimento,
+      carta_conducao: req.body.carta_conducao,
+      cartao_nos: req.body.cartao_nos,
+      comments: req.body.comments,
+      phonenumber: req.body.phonenumber,
+      required: req.body.required,
+			firstLogin: true
+	}),*/
 	searchByNameSchema:joi.string().trim().max(50).regex(/(?!^[0-9]*$)^([a-z]{6,50})$/)
 	
 };

@@ -6,7 +6,7 @@ module.exports = {
 	newPassword: newPassword,
 	editUser: editUser,
 	resetPassword: resetPassword,
-	dropActivity: dropActivity
+	state: state
 };
 
 function newPassword (req, res, next) {
@@ -15,7 +15,7 @@ function newPassword (req, res, next) {
 			password: bcrypt.hashSync(req.body.password, null, null),
 			firstLogin: true
 		},
-		req.body.id
+		req.params.id
 	];
 	userModels.update(values, function (err, result) {
 		if (err) return res.status(500).json(err)
@@ -26,9 +26,6 @@ function newPassword (req, res, next) {
 function editUser (req, res, next) {
 	let values = [
 		{
-      username: req.body.username,
-      password: req.body.password,
-      firstLogin: false,
       email: req.body.email,
       readContent: req.body.readContent,
       firstName: req.body.firstName,
@@ -38,16 +35,16 @@ function editUser (req, res, next) {
       data_entrada: req.body.data_entrada,
       foto: req.body.data_nascimento,
       carta_conducao: req.body.carta_conducao,
-      cartao_nos: req.body.carta_nos,
+      cartao_nos: req.body.cartao_nos,
       comments: req.body.comments,
-      state: req.body.state,
       phonenumber: req.body.phonenumber,
       required: req.body.required,
 			firstLogin: true
 		},
-		req.body.id
+		req.params.id
 	];
-	let paramsValidation = validation(values[0], 'insertSchema');
+
+	let paramsValidation = validation(values, 'insertSchema');
 	if (paramsValidation.error) {
 		return res.status(400).json({error: paramsValidation.error});
 	}
@@ -64,7 +61,7 @@ function resetPassword (req, res, next) {
 			password: bcrypt.hashSync('password', null, null),
 			firstLogin: true
 		},
-		req.body.id
+		req.params.id
 	];
 
 	userModels.update(values, function (err, result) {
@@ -73,12 +70,12 @@ function resetPassword (req, res, next) {
 	});
 }
 
-function dropActivity (req, res, next) {
+function state (req, res, next) {
 	let values = [
 		{
 			state: 'inactive'
 		},
-		req.body.id
+		req.params.id
 	];
 
 	userModels.update(values, function (err, result) {

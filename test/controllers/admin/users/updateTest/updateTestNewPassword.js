@@ -19,8 +19,8 @@ describe('#Testing update.js from users', function() {
     describe('With errors and without db', function () {
       it('it should return error 500 when there is no db connection', function(done) {
       connection
-        .put('/users')
-        .send({ password: '123', id: 2 })
+        .put('/users/newPassword/1')
+        .send('values')
         .end(function (err, res) {
            assert.isNotOk(err);
            assert.equal(res.statusCode, 500);
@@ -53,8 +53,8 @@ describe('#Testing update.js from users', function() {
        it('It should update a new password into user', function(done) {
         let values = {password: '123', id: 1};
         connection
-          .put('/users')
-          .send(values)
+          .put(`/users/newPassword/${values.id}`)
+          .send({password: '123'})
           .end(function (err, res) {
             assert.isNotOk(err);
             assert.equal(res.statusCode, 200);
