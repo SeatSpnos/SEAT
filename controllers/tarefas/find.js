@@ -1,4 +1,3 @@
-
 const userModel = require('models/admin').user.find;
 const scaleModel = require('models/escala').find;
 const tasksModel = require('models/tarefas').find;
@@ -58,22 +57,15 @@ function allTasks (req, res, next) {
 }
 
 function verify (req, res, next) {
-  let conflicts = [];
   let tasksForm = [
-    req.body.userFK,
-    req.body.horaInicio
+    req.body.date || moment().format('YYYY-MM-DD'),
+    req.body.horaInicio,
+    req.body.userFK
   ];
+  console.log(tasksForm[0]);
   tasksModel.verify(tasksForm, (err, results) => {
     if (err) return res.status(500).json(err);
-    for (let i in results) {
-      if (results[i].repeat > 0 || results[i].duracao > 0) {
-        conflicts.push(results[i]);
-      }
-    }
-    if (!conflicts.length) {
-      res.status(200).json(results);
-    } else {
-      res.status(200).json(conflicts);
-    }
+    results = results[2];
+    res.status(200).json(results);
   });
 }
