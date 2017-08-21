@@ -15,8 +15,12 @@ function byIDandTask (callback) {
 
 function verify (taskForm, callback) {
   let sqlQuery =
-  `SELECT * FROM tarefas
-  WHERE userFK = ? AND horaInicio = ?`;
+  `SET @date = ?;
+  SET @startHour = ?;
+  SELECT * FROM tarefas
+  WHERE userFK = ? 
+  AND @date BETWEEN dataInicio AND dataFim 
+  AND @startHour BETWEEN horaInicio AND horaFim`;
   query(db, sqlQuery, taskForm, callback);
 }
 
@@ -25,8 +29,7 @@ function allTasksByDate (date, callback) {
   `SET @date = ?; 
   SELECT *
   FROM tarefas 
-  WHERE dataInicio >= @date
-    AND dataInicio < DATE_ADD(@date, INTERVAL 1 MONTH)`;
+  WHERE dataInicio >= @date`;
   query(db, sqlQuery, date, callback);
 }
 
