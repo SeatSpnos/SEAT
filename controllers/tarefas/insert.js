@@ -10,7 +10,6 @@ module.exports = (req, res, next) => {
     tarefa: req.body.tarefa,
     userFK: req.body.userFK
   };
-
   tarefasModel.find.byUserFK(values.userFK, (err, users) => {
     if (err) return res.status(500).json(err);
     if (!users.length) {
