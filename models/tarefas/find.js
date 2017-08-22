@@ -29,7 +29,7 @@ function allTasksByDate (date, callback) {
   `SET @date = ?; 
   SELECT *
   FROM tarefas 
-  WHERE dataInicio >= @date`;
+  WHERE @date BETWEEN dataInicio AND dataFim`;
   query(db, sqlQuery, date, callback);
 }
 
