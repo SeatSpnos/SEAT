@@ -39,7 +39,7 @@ describe('#Testing tarefas controllers', function () {
     it('It should return data if a conflict is verified ', function (done) {
       request
         .post('/tarefas/verify')
-        .send({userFK: 5, horaInicio: '09:00:00'})
+        .send({userFK: 3, horaInicio: '09:00:00', date: '2017-08-22'})
         .end(function (err, res) {
           assert.isNotOk(err);
           assert.equal(res.statusCode, 200);
@@ -51,7 +51,7 @@ describe('#Testing tarefas controllers', function () {
     it('It should return an empty array if there are no conflicts', function (done) {
       request
         .post('/tarefas/verify')
-        .send({userFK: 15, horaInicio: '09:00:00'})
+        .send({userFK: 3, horaInicio: '09:00:00'})
         .end(function (err, res) {
           assert.isNotOk(err);
           assert.equal(res.statusCode, 200);
