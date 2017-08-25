@@ -12,7 +12,7 @@ function one (req, res, next) {
   } else {
     escalaUpdateModel.one(id, req.body.value, function (err, results) {
       if (results.affectedRows === 0) {
-        return res.status(404).json(` Database has no user with the id '${id}' `);
+        return res.status(404).json(`Scale id:${id} not found`);
       } else {
         if (err) return res.status(500).json(err);
         res.status(200).json(results);

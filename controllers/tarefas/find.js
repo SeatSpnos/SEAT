@@ -125,7 +125,6 @@ function verify (req, res, next) {
     req.body.horaInicio,
     req.body.userFK
   ];
-  console.log(tasksForm[0]);
   tasksModel.verify(tasksForm, (err, results) => {
     if (err) return res.status(500).json(err);
     results = results[2];
