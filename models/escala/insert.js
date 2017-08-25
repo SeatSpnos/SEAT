@@ -14,6 +14,6 @@ function one (values, callback) {
 
 function bulk (values, callback) {
   let sqlQuery =
-  `INSERT INTO escalas
-  (user_FK_ID, date, value) VALUES IN (?)`;
+  `INSERT INTO escala (user_FK_ID, value, date) VALUES ?`;
+  query(db, sqlQuery, [values], callback);
 }

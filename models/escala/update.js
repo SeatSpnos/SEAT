@@ -3,7 +3,7 @@ const db = 'seat';
 
 module.exports = {
   one: one,
-  bulkById: bulkById
+  bulk: bulk
 };
 
 function one (id, value, callback) {
@@ -15,12 +15,10 @@ function one (id, value, callback) {
   query(db, sqlQuery, values, callback);
 }
 
-function bulkById (ids, value, callback) {
+function bulk (id, value, callback) {
   let sqlQuery =
-  `UPDATE escala 
-  SET value = ?
-  WHERE id IN (?)
-  `;
-  let values = [value, ids];
+  `UPDATE escala SET value = ?
+  WHERE id IN (?)`;
+  let values = [value, id];
   query(db, sqlQuery, values, callback);
 }

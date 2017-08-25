@@ -3,6 +3,7 @@ const db = 'seat';
 
 module.exports = {
   findByDate: findByDate,
+  betweenDates: betweenDates,
   findByDateAndFk: findByDateAndFk,
   allTasks: allTasks
 };
@@ -15,6 +16,15 @@ function findByDate (date, callback) {
   WHERE date >= @date
     AND date < DATE_ADD(@date, INTERVAL 1 MONTH)`;
   query(db, sqlScaleQuery, date, callback);
+}
+
+function betweenDates (dateBegin, dateEnd, userFK, callback) {
+  let sqlQuery =
+  `SELECT * FROM escala
+  WHERE date BETWEEN ? AND ?
+  AND user_FK_ID = ?`;
+  let values = [dateBegin, dateEnd, userFK];
+  query(db, sqlQuery, values, callback);
 }
 
 function findByDateAndFk (date, userFK, callback) {
