@@ -2,8 +2,7 @@ const query = require('../../models/query_ots').post;
 const db = 'seat';
 
 module.exports = {
-  one: one,
-  bulk: bulk
+  one: one
 };
 
 function one (id, value, callback) {
@@ -15,10 +14,11 @@ function one (id, value, callback) {
   query(db, sqlQuery, values, callback);
 }
 
+/*
 function bulk (id, value, callback) {
   let sqlQuery =
   `UPDATE escala SET value = ?
   WHERE id IN (?)`;
   let values = [value, id];
   query(db, sqlQuery, values, callback);
-}
+}*/

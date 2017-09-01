@@ -2,10 +2,10 @@ const query = require('../../models/query_ots').post;
 const db = 'seat';
 
 module.exports = {
-  findByDate: findByDate,
-  betweenDates: betweenDates,
+  findByDate: findByDate
+ /* betweenDates: betweenDates,
   findByDateAndFk: findByDateAndFk,
-  allTasks: allTasks
+  allTasks: allTasks*/
 };
 
 function findByDate (date, callback) {
@@ -18,9 +18,11 @@ function findByDate (date, callback) {
   query(db, sqlScaleQuery, date, callback);
 }
 
+/*
 function betweenDates (dateBegin, dateEnd, userFK, callback) {
   let sqlQuery =
-  `SELECT * FROM escala
+  `SELECT * 
+  FROM escala
   WHERE date BETWEEN ? AND ?
   AND user_FK_ID = ?`;
   let values = [dateBegin, dateEnd, userFK];
@@ -41,4 +43,4 @@ function allTasks (callback) {
   `SELECT tarefaID, tarefa
   FROM tarefas`;
   query(db, sqlQuery, callback);
-}
+}*/

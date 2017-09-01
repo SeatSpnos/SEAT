@@ -2,25 +2,24 @@ const query = require('../../models/query_ots').post;
 const db = 'seat';
 
 module.exports = {
-  byIDandTask: byIDandTask,
+  all: all,
   verify: verify,
-  allTasksByDate: allTasksByDate,
-  byUserFK: byUserFK
+  allTasksByDate: allTasksByDate
 };
 
-function byIDandTask (callback) {
-  let sqlQuery = `SELECT tarefaID, tarefa FROM tarefas`;
+function all (callback) {
+  let sqlQuery = `SELECT * FROM tasks`;
   query(db, sqlQuery, null, callback);
 }
 
 function verify (taskForm, callback) {
   let sqlQuery =
   `SET @date = ?;
-  SET @startHour = ?;
-  SELECT * FROM tarefas
-  WHERE userFK = ? 
-  AND @date BETWEEN dataInicio AND dataFim 
-  AND @startHour BETWEEN horaInicio AND horaFim`;
+  SET @dateEnd = ?;
+  SELECT distinct(taskID), taskValue, userFK, dateBegin
+  FROM tasked_users, escala
+  WHERE (dateBegin >= @date and dateBegin <= @dateEnd)
+  AND userFK = ?`;
   query(db, sqlQuery, taskForm, callback);
 }
 
@@ -28,14 +27,7 @@ function allTasksByDate (date, callback) {
   let sqlQuery =
   `SET @date = ?; 
   SELECT *
-  FROM tarefas 
-  WHERE @date BETWEEN dataInicio AND dataFim`;
+  FROM tasked_users 
+  WHERE @date = dateBegin`;
   query(db, sqlQuery, date, callback);
-}
-
-function byUserFK (id, callback) {
-  let sqlQuery =
-  `SELECT * FROM tarefas
-  WHERE userFK = ?`;
-  query(db, sqlQuery, id, callback);
 }

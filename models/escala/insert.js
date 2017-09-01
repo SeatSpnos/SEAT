@@ -12,8 +12,17 @@ function one (values, callback) {
   query(db, sqlQuery, values, callback);
 }
 
-function bulk (values, callback) {
+/*function bulk (values, callback) {
   let sqlQuery =
   `INSERT INTO escala (user_FK_ID, value, date) VALUES ?`;
   query(db, sqlQuery, [values], callback);
+}*/
+
+function bulk (values, callback) {
+  let sqlQuery =
+  `INSERT INTO escala 
+  (user_FK_ID, value, date) 
+  VALUES ?
+  ON DUPLICATE KEY UPDATE value=VALUES(value)`;
+  query(db, sqlQuery, values, callback);
 }
