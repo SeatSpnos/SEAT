@@ -113,21 +113,80 @@ function allByDate (req, res, next) {
 } */
 
 function allTasks (req, res, next) {
-  tasksModel.byIDandTask((err, tasks) => {
+  tasksModel.all((err, tasks) => {
     if (err) return res.status(500).json(err);
     res.status(200).json(tasks);
   });
 }
 
+// TODO!! IF REPEAT > 0 WE STILL RECEIVE ALL THE DATA FROM
+// DATE_BEGIN UNTIL DATE_END, CONFLICT OR NOT.
 function verify (req, res, next) {
-  let tasksForm = [
-    req.body.date || moment().format('YYYY-MM-DD'),
-    req.body.horaInicio,
-    req.body.userFK
+  let params = {
+    horaInicio: req.body.horaInicio,
+    dateEnd: req.body.dateEnd,
+    duracao: req.body.duracao,
+    repeat: req.body.repeat,
+    until: req.body.until,
+    userFK: req.body.userFK
+  };
+
+  let tasks = [
+    async.constant(params),
+    addDuracao,
+    addRepeat,
+    verifyTask
   ];
-  tasksModel.verify(tasksForm, (err, results) => {
-    if (err) return res.status(500).json(err);
-    results = results[2];
+  async.waterfall(tasks, end);
+
+  function end (err, results) {
+    if (err) res.status(500).json(err);
     res.status(200).json(results);
+  }
+}
+
+function addDuracao (params, next) {
+  if (params.duracao > 0) {
+    let timeToAdd = 30 * params.duracao;
+    params.dateEnd = moment(params.horaInicio).add(timeToAdd, 'm').format('YYYY-MM-DD HH:mm:ss');
+    next(null, params);
+  } else {
+    params.dateEnd = moment(params.horaInicio).add(30, 'm').format('YYYY-MM-DD HH:mm:ss');
+    next(null, params);
+  }
+  console.log('ADD DURACAO PARAMS:', params);
+}
+
+function addRepeat (params, next) {
+  if (params.repeat > 0) {
+    let momentBeginDate = moment(params.dateEnd);
+    let momentfinalDate = moment(params.until);
+    console.log('MOMENT DATEEND:', momentBeginDate);
+    console.log('MOMENT UNTIL', momentfinalDate);
+    for (
+      let currentDate = momentBeginDate;
+      momentfinalDate.diff(currentDate, 'days') >= 0;
+      currentDate.add(1, 'd')) {
+      params.dateEnd = currentDate.format('YYYY-MM-DD HH:mm:ss');
+    }
+    console.log('FINAL DATE:', params.dateEnd);
+    next(null, params);
+  } else {
+    next(null, params);
+  }
+  console.log('ADD REPEAT PARAMS:', params);
+}
+
+function verifyTask (params, next) {
+  let taskForm = [
+    params.horaInicio,
+    params.dateEnd,
+    params.userFK
+  ];
+  console.log('VERIFY PARAMS:', params);
+  tasksModel.verify(taskForm, (err, results) => {
+    if (err) return next(err);
+    results = results[2];
+    next(null, results);
   });
 }

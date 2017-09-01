@@ -1,6 +1,6 @@
-const escalaUpdateModel = require('../../models/escala').update;
+// const escalaUpdateModel = require('../../models/escala').update;
+// const escalaFindModel = require('../../models/escala').find;
 const escalaInsertModel = require('../../models/escala').insert;
-const escalaFindModel = require('../../models/escala').find;
 const moment = require('moment');
 
 module.exports = {
@@ -22,52 +22,69 @@ function bulk (req, res, next) {
     user_FK_ID: req.body.user_FK_ID,
     value: req.body.value
   };
-  escalaFindModel.betweenDates(values.dateBegin, values.dateEnd, values.user_FK_ID, (err, scales) => {
-    let arrayItemsToUpdate = [];
+  let toSend = [];
+  let momentBeginDate = moment(values.dateBegin);
+  let momentfinalDate = moment(values.dateEnd);
+  for (
+    let currentDate = momentBeginDate;
+    momentfinalDate.diff(currentDate, 'days') >= 0;
+    currentDate.add(1, 'd')) {
+    let tempArry = [values.user_FK_ID, values.value, currentDate.format('YYYY-MM-DD')];
+    toSend.push(tempArry);
+  }
+  escalaInsertModel.bulk([toSend], (err, results) => {
     if (err) return res.status(500).json(err);
-    if (scales.length) {
-      for (let i in scales) {
-        arrayItemsToUpdate.push(scales[i].id);
-      }
-      escalaUpdateModel.bulk(arrayItemsToUpdate, values.value, (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.status(200).json(results);
-      });
-    } else {
-      let momentBeginDate = moment(values.dateBegin);
-      let momentfinalDate = moment(values.dateEnd);
-      let insertValues = [];
-      let dates = [];
-      for (
-        let currentDate = momentBeginDate;
-        momentfinalDate.diff(currentDate, 'days') >= 0;
-        currentDate.add(1, 'd')) {
-        dates.push(currentDate.format('YYYY-MM-DD'));
-      }
-      for (let i in dates) {
-        insertValues.push([values.user_FK_ID, values.value, dates[i]]);
-      }
-      escalaInsertModel.bulk(insertValues, (err, results) => {
-        if (err) return res.status(500).json(err);
-        res.status(200).json(results);
-      });
-    }
+    res.status(200).json(results);
   });
 }
-
-/*function bulk (req, res, next) {
+/* function bulk (req, res, next) {
   let values = {
     dateBegin: req.body.dateBegin,
     dateEnd: req.body.dateEnd,
     user_FK_ID: req.body.user_FK_ID,
     value: req.body.value
   };
+  escalaFindModel.betweenDates(values.dateBegin, values.dateEnd, values.user_FK_ID, (err, scales) => {
+    let arrayItemsToUpdate = [];
+    if (err) return res.status(500).json(err);
+    for (let i in scales) {
+      arrayItemsToUpdate.push(scales[i].id);
+    }
+    escalaUpdateModel.bulk(arrayItemsToUpdate, values.value, (err, results) => {
+      if (err) return res.status(500).json(err);
+      res.status(200).json(results);
+    });
+    let momentBeginDate = moment(values.dateBegin);
+    let momentfinalDate = moment(values.dateEnd);
+    let insertValues = [];
+    let dates = [];
+    for (
+      let currentDate = momentBeginDate;
+      momentfinalDate.diff(currentDate, 'days') >= 0;
+      currentDate.add(1, 'd')) {
+      dates.push(currentDate.format('YYYY-MM-DD'));
+    }
+    for (let i in dates) {
+      insertValues.push([values.user_FK_ID, values.value, dates[i]]);
+    }
+    escalaInsertModel.bulk(insertValues, (err, results) => {
+      if (err) return res.status(500).json(err);
+      res.status(200).json(results);
+    });
+  });
+} */
 
+ /* function bulk (req, res, next) {
+  let values = {
+    dateBegin: req.body.dateBegin,
+    dateEnd: req.body.dateEnd,
+    user_FK_ID: req.body.user_FK_ID,
+    value: req.body.value
+  };
   getEachData(values.dateBegin, values.dateEnd, loop, (err, rows) => {
     if (err) return res.status(500).json(err);
     res.status(200).json(rows);
   });
-
   function loop (date, loopcb) {
     let formatedDate = date.format('YYYY/MM/DD');
     escalaFindModel.findByDateAndFk(formatedDate, values.user_FK_ID, (err, row) => {
@@ -84,7 +101,6 @@ function bulk (req, res, next) {
       }
     });
   }
-
   function getEachData (dateBegin, dateEnd, loop, callback) {
     let momentBeginDate = moment(dateBegin);
     let momentfinalDate = moment(dateEnd);
@@ -102,4 +118,4 @@ function bulk (req, res, next) {
       if (dates.length === totalDates) { callback(null, dates); }
     }
   }
-}*/
+} */
