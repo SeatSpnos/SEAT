@@ -13,7 +13,7 @@ module.exports = {
   home: require('./mainpages').home,
 
   // Tables
-  equipmentstate: require('./tables').equipmentstate,
+  tables: require('./tables'),
   incstate: require('./tables').incstate,
 
   // Wallboards
@@ -31,5 +31,8 @@ module.exports = {
   // ESCALA
   escala: require('./escala'),
   // TAREFAS
-  tarefas: require('./tarefas')
+  tarefas: require('./tarefas'),
+  // MENU
+  menus: require('./menus'),
+  dumpSEA: require('./dumpSEA')
 };
